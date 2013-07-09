@@ -13,13 +13,13 @@ Invoking GoBot is really easy:
 
 For example:
 
-    $ gobot chat.freenode.net python-requests
+    $ gobot chat.freenode.net #python-requests
 
 GoBot will set itself up, join the channel, and then...do nothing. If you want
 a bot that does something a bit smarter, you can log all the output from the
 channel:
 
-    $ gobot -l logfile chat.freenode.net python-requests
+    $ gobot -l logfile chat.freenode.net #python-requests
 
 If you want to really get smarter, we need to start talking about botscripts.
 
