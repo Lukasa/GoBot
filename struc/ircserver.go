@@ -6,15 +6,18 @@ import (
 	"strings"
 )
 
-/* Represents a single IRC server. Currently there should be only one of these
- * in a running instance of GoBot, or it will get very confused.
- */
+/*
+Represents a single IRC server. Currently there should be only one of these
+in a running instance of GoBot, or it will get very confused.
+*/
 type IRCServer struct {
 	IPAddr net.IP
 	Port   uint64
 	Name   string
 }
 
+// NewIRCServerFromHostnamePort creates a new IRCServer structure given a
+// hostname-and-port string.
 func NewIRCServerFromHostnamePort(hostnameAndPort string) (*IRCServer, error) {
 	host, port := "", ""
 	var err error
