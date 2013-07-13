@@ -96,7 +96,6 @@ func TestSender(t *testing.T) {
 func TestReceiver(t *testing.T) {
 	// Set up our variables.
 	dataChan := make(chan []byte)
-	closer := make(chan int)
 	conn := new(MockConn)
 	conn.SetBuffer = make(chan []byte)
 
@@ -108,7 +107,7 @@ func TestReceiver(t *testing.T) {
 	}
 
 	// Start the goroutine.
-	go Receiver(conn, dataChan, closer)
+	go Receiver(conn, dataChan)
 
 	for _, msg := range messages {
 		// Send the message in.
@@ -126,4 +125,8 @@ func TestReceiver(t *testing.T) {
 				recvMsg)
 		}
 	}
+
+	// Close the channel and confirm the tests don't panic.
+	close(dataChan)
+	time.Sleep(50 * time.Millisecond)
 }
