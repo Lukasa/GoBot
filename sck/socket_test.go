@@ -128,5 +128,6 @@ func TestReceiver(t *testing.T) {
 
 	// Close the channel and confirm the tests don't panic.
 	close(dataChan)
-	time.Sleep(50 * time.Millisecond)
+	conn.SetBuffer <- []byte("Last test")
+	time.Sleep(100 * time.Millisecond)
 }
