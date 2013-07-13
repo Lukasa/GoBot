@@ -7,7 +7,11 @@ sending and recieving messages as fast as possible.
 */
 package sck
 
-import "net"
+import (
+	"github.com/Lukasa/GoBot/struc"
+	"net"
+	"time"
+)
 
 // Sender loops indefinitely sending any data that is sent to it over the connection.
 // Can be stopped by closing the channel.
@@ -47,4 +51,21 @@ func Receiver(conn net.Conn, data chan []byte) {
 
 		data <- buf
 	}
+}
+
+// Connect sets up the connection to the IRC server and starts the goroutines that control sending
+// and receiving data to/from the server. Returns the connection itself so that it can be closed
+// at some later point.
+func Connect(server struc.IRCServer, send, receive chan []byte) (*net.Conn, error) {
+	addr := server.Name + ":" + string(server.Port)
+
+	conn, err := net.DialTimeout("tcp", addr, 10*time.Second)
+	if err != nil {
+		return nil, err
+	}
+
+	go Sender(conn, send)
+	go Receiver(conn, receive)
+
+	return &conn, nil
 }
