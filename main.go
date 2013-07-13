@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Lukasa/GoBot/sck"
 	"github.com/Lukasa/GoBot/struc"
+	"time"
 )
 
 // main is the entry point for GoBot.
@@ -25,16 +26,24 @@ func main() {
 		fmt.Errorf("Could not connect to %v:%v. Exiting.", server.IPAddr, server.Port)
 	}
 
-	// Send a test registration just to prove we can.
-	nick := []byte("NICK GoBot")
-	sendChan <- nick
-	resp := <-recvChan
-	fmt.Println(string(resp))
+	go func() {
+		for {
+			resp := <-recvChan
+			fmt.Println(string(resp))
+		}
+	}()
 
-	user := []byte("USER gobot 0 * :GoBot")
+	// Send a test registration just to prove we can.
+	nick := []byte("NICK GoBot\r\n")
+	sendChan <- nick
+
+	user := []byte("USER GoBot 1 1 1 :GoBot\r\n")
 	sendChan <- user
-	resp = <-recvChan
-	fmt.Println(string(resp))
+
+	join := []byte("JOIN #python-requests")
+	sendChan <- join
+
+	time.Sleep(60 * time.Second)
 
 	return
 }
