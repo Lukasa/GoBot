@@ -10,6 +10,7 @@ package sck
 import (
 	"github.com/Lukasa/GoBot/struc"
 	"net"
+	"strconv"
 	"time"
 )
 
@@ -56,8 +57,8 @@ func Receiver(conn net.Conn, data chan []byte) {
 // Connect sets up the connection to the IRC server and starts the goroutines that control sending
 // and receiving data to/from the server. Returns the connection itself so that it can be closed
 // at some later point.
-func Connect(server struc.IRCServer, send, receive chan []byte) (*net.Conn, error) {
-	addr := server.Name + ":" + string(server.Port)
+func Connect(server *struc.IRCServer, send, receive chan []byte) (*net.Conn, error) {
+	addr := server.IPAddr.String() + ":" + strconv.Itoa(int(server.Port))
 
 	conn, err := net.DialTimeout("tcp", addr, 10*time.Second)
 	if err != nil {
