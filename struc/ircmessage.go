@@ -108,6 +108,7 @@ const Commands = []string{
 // IRCMessage structure represents a parsed IRC message. These are used internally rather than byte buffers.
 type IRCMessage struct {
 	Prefix       string   // With the colon removed.
+	Response     bool     // Whether this is a response or a command.
 	Command      int      // This or ResponseCode will be set, but not both.
 	ResponseCode string   // This must be a string to ensure that 001 stays 001.
 	Arguments    []string // Arbitrary number of arguments to any command.
