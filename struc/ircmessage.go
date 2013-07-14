@@ -54,7 +54,7 @@ const (
 
 // Commands defines the commands in string form. The use of iota above means the constants provide
 // indices into this array.
-const Commands = []string{
+var Commands = []string{
 	"ADMIN",
 	"AWAY",
 	"CONNECT",
