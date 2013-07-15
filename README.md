@@ -70,3 +70,11 @@ As always, I welcome contributors! Please follow these steps:
 4. Write the fix.
 5. Send your Pull Request! If I don't get around to at least commenting on it
    within a couple of days, badger me on Twitter or in IRC.
+
+## License
+
+GoBot's source code is provided under the
+[MIT License](http://opensource.org/licenses/mit-license.php). The software is
+and always shall be provided free of charge. If you're feeling like
+remunerating me, either buy me a beer sometime or
+[tip me on Gittip](https://www.gittip.com/Lukasa/).
