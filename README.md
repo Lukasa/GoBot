@@ -32,10 +32,10 @@ follow a set of instructions called a 'botscript'.
 A very simple botscript looks like this:
 
     [filter]
-    regex="!m .*"
+    regex="!m (.*)"
 
     [action]
-    print="You're doing great work, $UNAME!"
+    print="You're doing great work, $MATCH!"
 
 A botscript is made up of two parts: a filter section and then an action
 section. Each of these sections is made up of several sub-parts. These
