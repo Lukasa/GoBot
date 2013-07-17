@@ -5,14 +5,17 @@ import (
 )
 
 // The Filter type is the type of the functions that act as filters. They accept IRCMessage structures and return
-// whether or not the given message matches the filter.
-type Filter func(*struc.IRCMessage) bool
+// whether or not the given message matches the filter, and any arguments or keyword arguments they want passed to actions.
+type Filter func(*struc.IRCMessage) (bool, []string, map[string]string)
 
 // The YesFilter is the simplest kind of filter, allowing all non-nil messages to match.
-func YesFilter(msg *struc.IRCMessage) bool {
+func YesFilter(msg *struc.IRCMessage) (bool, []string, map[string]string) {
+	args := make([]string, 0)
+	kwargs := make(map[string]string)
+
 	if msg != nil {
-		return true
+		return true, args, kwargs
 	} else {
-		return false
+		return false, args, kwargs
 	}
 }
