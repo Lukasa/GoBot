@@ -19,23 +19,7 @@ func BuildBotscript(filters []Filter, actions []Action) Botscript {
 				break
 			}
 
-			args := make([]string, 0)
-			kwargs := make(map[string]string)
-			pass := true
-
-			// Apply the filters.
-			for filter := range filters {
-				pass, newargs, newkwargs := filter(msg)
-
-				if !pass {
-					break
-				}
-
-				append(args, newargs...)
-				for k, v := range newkwargs {
-					kwargs[k] = v
-				}
-			}
+			pass, args, kwargs := applyFilters(msg, filters)
 
 			// Don't do anything if any of the filters failed.
 			if !pass {
@@ -43,7 +27,7 @@ func BuildBotscript(filters []Filter, actions []Action) Botscript {
 			}
 
 			// Apply the actions.
-			for action := range actions {
+			for _, action := range actions {
 				response := action(msg, args, kwargs)
 				if response != nil {
 					out <- response
@@ -51,4 +35,27 @@ func BuildBotscript(filters []Filter, actions []Action) Botscript {
 			}
 		}
 	}
+}
+
+// applyFilters takes a map of filters and an IRC message and applies each filter in turn. Returns whether all the filters
+// passed, and any arguments/keyword arguments they set.
+func applyFilters(msg *struc.IRCMessage, filters []Filter) (bool, []string, map[string]string) {
+	args := make([]string, 0)
+	kwargs := make(map[string]string)
+	pass := true
+
+	for _, filter := range filters {
+		pass, newargs, newkwargs := filter(msg)
+
+		if !pass {
+			break
+		}
+
+		args = append(args, newargs...)
+		for k, v := range newkwargs {
+			kwargs[k] = v
+		}
+	}
+
+	return pass, args, kwargs
 }
