@@ -45,7 +45,10 @@ func applyFilters(msg *struc.IRCMessage, filters []Filter) (bool, []string, map[
 	pass := true
 
 	for _, filter := range filters {
-		pass, newargs, newkwargs := filter(msg)
+		var newargs []string
+		var newkwargs map[string]string
+
+		pass, newargs, newkwargs = filter(msg)
 
 		if !pass {
 			break
