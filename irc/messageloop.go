@@ -40,6 +40,7 @@ func ParsingLoop(in chan []byte, out chan *struc.IRCMessage) {
 			break
 		}
 
+		// We can get multiple messages in each packet.
 		messages := bytes.Split(unparsed, []byte{'\r', '\n'})
 
 		for _, message := range messages {
