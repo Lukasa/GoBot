@@ -3,8 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/Lukasa/GoBot/irc"
 	"github.com/Lukasa/GoBot/sck"
 	"github.com/Lukasa/GoBot/struc"
+	"os"
 	"time"
 )
 
@@ -26,12 +28,19 @@ func main() {
 		fmt.Errorf("Could not connect to %v:%v. Exiting.", server.IPAddr, server.Port)
 	}
 
-	go func() {
-		for {
-			resp := <-recvChan
-			fmt.Println(string(resp))
-		}
-	}()
+	// Prepare the botscripts. For this simple case we'll log everything, so add a YesFilter and a logger to stdout.
+	writeAction := irc.LogAction(os.Stdout)
+	script := irc.BuildBotscript([]irc.Filter{irc.YesFilter}, []irc.Action{writeAction})
+
+	// We need a few extra channels. One from the parsing loop to the dispatch loop, one from the goroutines to the
+	// unparsing loop.
+	parsingOut := make(chan *struc.IRCMessage)
+	unparsingIn := make(chan *struc.IRCMessage)
+
+	// Set the loops going.
+	go irc.ParsingLoop(recvChan, parsingOut)
+	go irc.UnParsingLoop(unparsingIn, sendChan)
+	go irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{script})
 
 	// Send a test registration just to prove we can.
 	nick := []byte("NICK GoBot\r\n")
