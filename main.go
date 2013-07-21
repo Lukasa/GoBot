@@ -6,7 +6,9 @@ import (
 	"github.com/Lukasa/GoBot/irc"
 	"github.com/Lukasa/GoBot/sck"
 	"github.com/Lukasa/GoBot/struc"
+	"math/rand"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -15,6 +17,7 @@ func main() {
 	sendChan := make(chan []byte)
 	recvChan := make(chan []byte)
 	args := parseArgs()
+	username := genUsername()
 	serverStr := args[0]
 
 	// Parse this string into an IRC server.
@@ -43,10 +46,10 @@ func main() {
 	go irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{script})
 
 	// Send a test registration just to prove we can.
-	nick := []byte("NICK GoBot\r\n")
+	nick := []byte(fmt.Sprintf("NICK %v\r\n", username))
 	sendChan <- nick
 
-	user := []byte("USER GoBot 1 1 1 :GoBot\r\n")
+	user := []byte(fmt.Sprintf("USER %v 1 1 1 :%v\r\n", username, username))
 	sendChan <- user
 
 	join := []byte("JOIN #python-requests")
@@ -63,4 +66,10 @@ func parseArgs() []string {
 	flag.Parse()
 	args := flag.Args()
 	return args
+}
+
+func genUsername() string {
+	base := "GoBot-"
+	uniqId := strconv.Itoa(int(rand.Int31()))
+	return base + uniqId
 }
