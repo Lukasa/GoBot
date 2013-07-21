@@ -44,13 +44,13 @@ func Receiver(conn net.Conn, data chan []byte) {
 		// Alloc a buffer into which we can read the data. According to RFC 2812:
 		// "messages SHALL NOT exceed 512 characters in length".
 		buf := make([]byte, 512)
-		_, err := conn.Read(buf)
+		count, err := conn.Read(buf)
 		if err != nil {
 			// Later we'll want to log this.
 			break
 		}
 
-		data <- buf
+		data <- buf[0:count]
 	}
 }
 

@@ -1,6 +1,7 @@
 package irc
 
 import (
+	"bytes"
 	"github.com/Lukasa/GoBot/struc"
 )
 
@@ -39,7 +40,13 @@ func ParsingLoop(in chan []byte, out chan *struc.IRCMessage) {
 			break
 		}
 
-		go ParseIRCMessage(unparsed, out)
+		messages := bytes.Split(unparsed, []byte{'\r', '\n'})
+
+		for _, message := range messages {
+			if len(message) > 0 {
+				go ParseIRCMessage(message, out)
+			}
+		}
 	}
 }
 
