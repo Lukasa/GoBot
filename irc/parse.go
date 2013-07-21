@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/Lukasa/GoBot/struc"
 	"sort"
+	"strings"
 )
 
 // ParseIRCMessage takes a byte array of an IRC message and parses it into an IRCMessage structure.
@@ -75,4 +76,31 @@ func ParseIRCMessage(msg []byte, out chan *struc.IRCMessage) {
 	// Send it on the channel and exit.
 	out <- parsedMsg
 	return
+}
+
+// UnparseIRCMessage builds an IRC message into a byte array suitable for sending on the wire. This method is not necessarily
+// cheap, so it expects to be run as a goroutine.
+func UnparseIRCMessage(msg *struc.IRCMessage, out chan []byte) {
+	components := make([]string, 0, 5)
+
+	if msg.Prefix != "" {
+		components = append(components, ":"+msg.Prefix)
+	}
+
+	if msg.Response {
+		components = append(components, msg.ResponseCode)
+	} else {
+		components = append(components, struc.Commands[msg.Command])
+	}
+
+	for _, arg := range msg.Arguments {
+		components = append(components, arg)
+	}
+
+	if msg.Trailing != "" {
+		components = append(components, ":"+msg.Trailing)
+	}
+
+	strMsg := strings.Join(components, " ")
+	out <- []byte(strMsg)
 }
