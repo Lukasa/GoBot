@@ -52,7 +52,7 @@ func main() {
 	user := []byte(fmt.Sprintf("USER %v 1 1 1 :%v\r\n", username, username))
 	sendChan <- user
 
-	join := []byte("JOIN #python-requests")
+	join := []byte("JOIN #python-requests\r\n")
 	sendChan <- join
 
 	time.Sleep(60 * time.Second)
