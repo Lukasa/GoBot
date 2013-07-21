@@ -25,7 +25,7 @@ func LogAction(target io.Writer) Action {
 
 		now := time.Now().String()
 		sender := strings.SplitN(msg.Prefix, "!", 2)[0]
-		logMsg := fmt.Sprintf("%v - %v: %v", now, sender, msg.Trailing)
+		logMsg := fmt.Sprintf("%v - %v: %v\n", now, sender, msg.Trailing)
 
 		target.Write([]byte(logMsg))
 		return nil
