@@ -10,13 +10,7 @@ import (
 // This can be viewed as the 'main' loop in GoBot.
 func DispatchMessages(in, out chan *struc.IRCMessage, scripts []Botscript) {
 	// Before we begin looping, set the botscripts running. Each one has its own dedicated input channel.
-	chans := make([]chan *struc.IRCMessage, 0)
-
-	for _, script := range scripts {
-		newChan := make(chan *struc.IRCMessage)
-		go script(newChan, out)
-		chans = append(chans, newChan)
-	}
+	chans := beginScripts(out, scripts)
 
 	// Pull messages off the input channel and dispatch them to each botscript.
 	for {
@@ -62,4 +56,18 @@ func UnParsingLoop(in chan *struc.IRCMessage, out chan []byte) {
 
 		go UnparseIRCMessage(parsed, out)
 	}
+}
+
+// beginScripts starts all the botscripts executing, and returns a slice of channels that will send messages to those
+// scripts.
+func beginScripts(outchan chan *struc.IRCMessage, scripts []Botscript) []chan *struc.IRCMessage {
+	chans := make([]chan *struc.IRCMessage, 0)
+
+	for _, script := range scripts {
+		newChan := make(chan *struc.IRCMessage)
+		go script(newChan, outchan)
+		chans = append(chans, newChan)
+	}
+
+	return chans
 }
