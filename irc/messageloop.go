@@ -19,6 +19,11 @@ func DispatchMessages(in, out chan *struc.IRCMessage, scripts []Botscript) {
 			break
 		}
 
+		// Anything that isn't a PRIVMSG or a PING gets dropped.
+		if (msg.Response) || ((msg.Command != struc.PRIVMSG) && (msg.Command != struc.PONG)) {
+			continue
+		}
+
 		for _, channel := range chans {
 			channel <- msg
 		}
