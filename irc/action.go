@@ -31,3 +31,17 @@ func LogAction(target io.Writer) Action {
 		return nil
 	}
 }
+
+// Pong responds an IRC PING message with an IRC PONG message.
+func Pong(msg *struc.IRCMessage, out chan *struc.IRCMessage) {
+	outMsg := struc.NewIRCMessage()
+	outMsg.Response = false
+	outMsg.Command = struc.PONG
+
+	// The PONG should basically return whatever was sent.
+	for _, arg := range msg.Arguments {
+		outMsg.Arguments = append(outMsg.Arguments, arg)
+	}
+
+	out <- outMsg
+}
