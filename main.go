@@ -23,12 +23,14 @@ func main() {
 	// Parse this string into an IRC server.
 	server, err := struc.NewIRCServerFromHostnamePort(serverStr)
 	if err != nil {
-		fmt.Errorf("Could not parse %v. Exiting.", serverStr)
+		fmt.Printf("Could not parse %v. Exiting.", serverStr)
+		os.Exit(1)
 	}
 
 	_, err = sck.Connect(server, sendChan, recvChan)
 	if err != nil {
-		fmt.Errorf("Could not connect to %v:%v. Exiting.", server.IPAddr, server.Port)
+		fmt.Printf("Could not connect to %v:%v. Exiting.", server.IPAddr, server.Port)
+		os.Exit(2)
 	}
 
 	// Prepare the botscripts. For this simple case we'll log everything, so add a YesFilter and a logger to stdout.
