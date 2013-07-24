@@ -42,8 +42,15 @@ func NewIRCServerFromHostnamePort(hostnameAndPort string) (*IRCServer, error) {
 		return nil, err
 	}
 
-	// Return the first address only, because we're very lazy.
-	addr := addrs[0]
+	// addrs can contain IPv6 addresses. For the moment, skip them. This is a bit of a dirty hack,
+	// but it's easier than writing our own test function.
+	var addr net.IP
+	for _, address := range addrs {
+		if address.To4() != nil {
+			addr = address
+			break
+		}
+	}
 
 	server := new(IRCServer)
 	server.IPAddr = addr
