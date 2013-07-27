@@ -50,3 +50,25 @@ func TestLogAction(t *testing.T) {
 		}
 	}
 }
+
+// Test that the Pong function works as expected.
+func TestPong(t *testing.T) {
+	ping := struc.NewIRCMessage()
+	ping.Arguments = []string{"adams.freenode.net"}
+	out := make(chan *struc.IRCMessage)
+
+	go Pong(ping, out)
+
+	pong := <-out
+	if pong.Response {
+		t.Errorf("Pong should not return responses.\n")
+	}
+
+	if pong.Command != struc.PONG {
+		t.Errorf("Unexpected command type: expected %v, got %v\n", struc.PONG, pong.Command)
+	}
+
+	if (len(pong.Arguments) != 1) || (pong.Arguments[0] != ping.Arguments[0]) {
+		t.Errorf("Unexpected argument array: expected %v, got %v\n", ping.Arguments, pong.Arguments)
+	}
+}
