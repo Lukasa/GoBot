@@ -19,8 +19,18 @@ func DispatchMessages(in, out chan *struc.IRCMessage, scripts []Botscript) {
 			break
 		}
 
-		// Anything that isn't a PRIVMSG or a PING gets dropped.
-		if (msg.Response) || ((msg.Command != struc.PRIVMSG) && (msg.Command != struc.PONG)) {
+		// Currently, we drop responses on the floor.
+		if msg.Response {
+			continue
+		}
+
+		// Quickly turn around PINGs.
+		if msg.Command == struc.PING {
+			go Pong(msg, out)
+		}
+
+		// If this isn't a PRIVMSG, drop it as well.
+		if msg.Command != struc.PRIVMSG {
 			continue
 		}
 
