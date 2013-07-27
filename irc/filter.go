@@ -13,12 +13,13 @@ type Filter func(*struc.IRCMessage) (bool, []string, map[string]string)
 func YesFilter(msg *struc.IRCMessage) (bool, []string, map[string]string) {
 	args := make([]string, 0)
 	kwargs := make(map[string]string)
+	result := false
 
 	if msg != nil {
-		return true, args, kwargs
-	} else {
-		return false, args, kwargs
+		result = true
 	}
+
+	return result, args, kwargs
 }
 
 // RegexFilterFromRegex takes a regular expression and returns a filter function that applies the given regular expression
