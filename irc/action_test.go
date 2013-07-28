@@ -51,6 +51,51 @@ func TestLogAction(t *testing.T) {
 	}
 }
 
+// Test the PrintAction function works as expected.
+func TestPrintAction(t *testing.T) {
+	action := PrintAction("You're doing good work, ${1}!")
+	kwargs := make(map[string]string)
+	args := [][]string{
+		[]string{"", "Fishcake"},
+		[]string{"", "Lukasa"},
+		[]string{"", "Cats", "Dogs"},
+	}
+	responses := []string{
+		"You're doing good work, Fishcake!",
+		"You're doing good work, Lukasa!",
+		"You're doing good work, Cats!",
+	}
+
+	for i, arg := range args {
+		msg := struc.NewIRCMessage()
+		msg.Response = false
+		msg.Command = struc.PRIVMSG
+		msg.Arguments = []string{"#python-requests"}
+
+		response := action(msg, arg, kwargs)
+
+		if response.Response {
+			t.Errorf("Response %v should not be a response", i)
+		}
+
+		if response.Command != struc.PRIVMSG {
+			t.Errorf("Response %v has incorrect Command: expected %v, got %v", i, struc.PRIVMSG, response.Command)
+		}
+
+		if len(response.Arguments) != 1 {
+			t.Errorf("Response %v has incorrect number of arguments: %v", i, len(response.Arguments))
+		}
+
+		if response.Arguments[0] != "#python-requests" {
+			t.Errorf("Response %v has incorrect argument: %v", i, response.Arguments[0])
+		}
+
+		if response.Trailing != responses[i] {
+			t.Errorf("Response %v has incorrect trailer: expected %v, got %v", i, responses[i], response.Trailing)
+		}
+	}
+}
+
 // Test that the Pong function works as expected.
 func TestPong(t *testing.T) {
 	ping := struc.NewIRCMessage()

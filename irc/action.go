@@ -2,6 +2,7 @@ package irc
 
 import (
 	"fmt"
+	"github.com/Lukasa/GoBot/irc/util"
 	"github.com/Lukasa/GoBot/struc"
 	"io"
 	"strings"
@@ -29,6 +30,34 @@ func LogAction(target io.Writer) Action {
 
 		target.Write([]byte(logMsg))
 		return nil
+	}
+}
+
+// PrintAction builds an action that replies to an IRC message with another message, based on a format
+// string that's not unlike a shell string using variable substitution.
+func PrintAction(format string) Action {
+	// Get the format string and the argument indices.
+	parsed, indices := util.BashFmtStringToGoFmtString(format)
+
+	return func(msg *struc.IRCMessage, args []string, kwargs map[string]string) *struc.IRCMessage {
+		if msg == nil {
+			return nil
+		}
+
+		response := struc.NewIRCMessage()
+		response.Response = false
+		response.Command = struc.PRIVMSG
+		response.Arguments = append(response.Arguments, msg.Arguments[0]) // First arg is the sender.
+
+		// Build the response.
+		fmtComponents := make([]interface{}, len(indices))
+		for i, index := range indices {
+			fmtComponents[i] = args[index]
+		}
+
+		response.Trailing = fmt.Sprintf(parsed, fmtComponents...)
+
+		return response
 	}
 }
 
