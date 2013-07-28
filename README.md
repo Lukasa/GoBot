@@ -35,7 +35,7 @@ A very simple botscript looks like this:
     regex="!m (.*)"
 
     [action]
-    print="You're doing great work, $1!"
+    print="You're doing great work, ${1}!"
 
 A botscript is made up of two parts: a filter section and then an action
 section. Each of these sections is made up of several sub-parts. These
