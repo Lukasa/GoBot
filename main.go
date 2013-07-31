@@ -35,7 +35,10 @@ func main() {
 
 	// Prepare the botscripts. For this simple case we'll log everything, so add a YesFilter and a logger to stdout.
 	writeAction := irc.LogAction(os.Stdout)
-	script := irc.BuildBotscript([]irc.Filter{irc.YesFilter}, []irc.Action{writeAction})
+	regexFilter, _ := irc.RegexFilterFromRegex("!m (.*)")
+	printAction := irc.PrintAction("You're doing truly excellent work, ${1}!")
+	logscript := irc.BuildBotscript([]irc.Filter{irc.YesFilter}, []irc.Action{writeAction})
+	printscript := irc.BuildBotscript([]irc.Filter{regexFilter}, []irc.Action{printAction})
 
 	// We need a few extra channels. One from the parsing loop to the dispatch loop, one from the goroutines to the
 	// unparsing loop.
@@ -45,7 +48,7 @@ func main() {
 	// Set the loops going.
 	go irc.ParsingLoop(recvChan, parsingOut)
 	go irc.UnParsingLoop(unparsingIn, sendChan)
-	go irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{script})
+	go irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{logscript, printscript})
 
 	// Send a test registration just to prove we can.
 	nick := []byte(fmt.Sprintf("NICK %v\r\n", username))
