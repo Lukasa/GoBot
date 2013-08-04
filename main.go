@@ -49,14 +49,7 @@ func main() {
 	go irc.UnParsingLoop(unparsingIn, sendChan)
 
 	// Send a test registration just to prove we can.
-	nick := []byte(fmt.Sprintf("NICK %v\r\n", username))
-	sendChan <- nick
-
-	user := []byte(fmt.Sprintf("USER %v 1 1 1 :%v\r\n", username, username))
-	sendChan <- user
-
-	join := []byte("JOIN #python-requests\r\n")
-	sendChan <- join
+	login(username, "#python-requests", sendChan)
 
 	// Run forever, dispatching messages.
 	err = irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{logscript, printscript})
@@ -76,4 +69,16 @@ func genUsername() string {
 	base := "GoBot-"
 	uniqId := strconv.Itoa(int(rand.Int31()))
 	return base + uniqId
+}
+
+// Send the messages needed to login
+func login(username, channel string, out chan []byte) {
+	nick := []byte(fmt.Sprintf("NICK %v\r\n", username))
+	out <- nick
+
+	user := []byte(fmt.Sprintf("USER %v 1 1 1 :%v\r\n", username, username))
+	out <- user
+
+	join := []byte(fmt.Sprintf("JOIN %v\r\n", channel))
+	out <- join
 }
