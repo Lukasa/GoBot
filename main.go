@@ -9,7 +9,6 @@ import (
 	"math/rand"
 	"os"
 	"strconv"
-	"time"
 )
 
 // main is the entry point for GoBot.
@@ -48,7 +47,6 @@ func main() {
 	// Set the loops going.
 	go irc.ParsingLoop(recvChan, parsingOut)
 	go irc.UnParsingLoop(unparsingIn, sendChan)
-	go irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{logscript, printscript})
 
 	// Send a test registration just to prove we can.
 	nick := []byte(fmt.Sprintf("NICK %v\r\n", username))
@@ -60,7 +58,8 @@ func main() {
 	join := []byte("JOIN #python-requests\r\n")
 	sendChan <- join
 
-	time.Sleep(60 * time.Second)
+	// Run forever, dispatching messages.
+	err = irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{logscript, printscript})
 
 	return
 }

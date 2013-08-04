@@ -8,7 +8,7 @@ import (
 // DispatchMessages loops infinitely, accepting parsed versions of received IRC messages and dispatching them to botscripts.
 // These botscripts return any messages they want to send on the 'out' channel.
 // This can be viewed as the 'main' loop in GoBot.
-func DispatchMessages(in, out chan *struc.IRCMessage, scripts []Botscript) {
+func DispatchMessages(in, out chan *struc.IRCMessage, scripts []Botscript) error {
 	// Before we begin looping, set the botscripts running. Each one has its own dedicated input channel.
 	chans := beginScripts(out, scripts)
 
@@ -38,6 +38,8 @@ func DispatchMessages(in, out chan *struc.IRCMessage, scripts []Botscript) {
 			channel <- msg
 		}
 	}
+
+	return nil
 }
 
 // ParsingLoop provides a tight loop that pops values off the input channel and dispatches goroutines to parse them. This loop
