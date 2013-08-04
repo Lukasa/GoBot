@@ -18,6 +18,7 @@ func main() {
 	args := parseArgs()
 	username := genUsername()
 	serverStr := args[0]
+	channel := args[1]
 
 	// Parse this string into an IRC server.
 	server, err := struc.NewIRCServerFromHostnamePort(serverStr)
@@ -49,7 +50,7 @@ func main() {
 	go irc.UnParsingLoop(unparsingIn, sendChan)
 
 	// Send a test registration just to prove we can.
-	login(username, "#python-requests", sendChan)
+	login(username, channel, sendChan)
 
 	// Run forever, dispatching messages.
 	err = irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{logscript, printscript})
