@@ -101,11 +101,11 @@ func TestParseIRCMessage(t *testing.T) {
 func TestUnparseIRCMessage(t *testing.T) {
 	// A set of pre-built IRC messages.
 	messages := [][]byte{
-		[]byte("USER GoBot 1 1 1 :GoBot"),
-		[]byte("NICK GoBot"),
-		[]byte(":barjavel.freenode.net NOTICE * :*** Checking Ident"),
-		[]byte(":barjavel.freenode.net 002 GoBot :Your host is barjavel.freenode.net[78.40.125.4/6667], running version ircd-seven-1.1.3"),
-		[]byte("PING calvino.freenode.net"),
+		[]byte("USER GoBot 1 1 1 :GoBot\r\n"),
+		[]byte("NICK GoBot\r\n"),
+		[]byte(":barjavel.freenode.net NOTICE * :*** Checking Ident\r\n"),
+		[]byte(":barjavel.freenode.net 002 GoBot :Your host is barjavel.freenode.net[78.40.125.4/6667], running version ircd-seven-1.1.3\r\n"),
+		[]byte("PING calvino.freenode.net\r\n"),
 	}
 
 	// The various components of each message.
