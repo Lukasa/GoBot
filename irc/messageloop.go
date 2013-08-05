@@ -27,6 +27,7 @@ func DispatchMessages(in, out chan *struc.IRCMessage, scripts []Botscript) error
 		// Quickly turn around PINGs.
 		if msg.Command == struc.PING {
 			go Pong(msg, out)
+			continue
 		}
 
 		// If this isn't a PRIVMSG, drop it as well.
