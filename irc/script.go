@@ -9,6 +9,8 @@ import (
 // They will not close their output channel before they exit.
 type Botscript func(in, out chan *struc.IRCMessage)
 
+// BuildBotscript creates a function that corresponds to a botscript that applies a variety of
+// filters and actions to an incoming message.
 func BuildBotscript(filters []Filter, actions []Action) Botscript {
 	return func(in, out chan *struc.IRCMessage) {
 		for {

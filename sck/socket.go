@@ -33,7 +33,7 @@ func Sender(conn net.Conn, data chan []byte) {
 }
 
 // Receiver loops indefinitely reading data off a connection and passing it on the channel.
-// Can be stopped by sending a close message on the 'cls' channel.
+// Can be (inelegantly) stopped by closing its output channel.
 // conn should be a net.TCPConn in real code, but has been left generic for testing purposes.
 func Receiver(conn net.Conn, data chan []byte) {
 	// If the channel is forcefully closed this routine will panic (write on closed channel).

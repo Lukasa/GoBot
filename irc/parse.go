@@ -105,4 +105,6 @@ func UnparseIRCMessage(msg *struc.IRCMessage, out chan []byte) {
 
 	strMsg := strings.Join(components, " ") + "\r\n"
 	out <- []byte(strMsg)
+
+	return
 }
