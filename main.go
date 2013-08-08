@@ -23,6 +23,9 @@ func main() {
 	channel := args[1]
 	sigs := make(chan os.Signal)
 
+	// Parallelise.
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	// Parse this string into an IRC server.
 	server, err := struc.NewIRCServerFromHostnamePort(serverStr)
 	if err != nil {
