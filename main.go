@@ -59,7 +59,7 @@ func main() {
 	login(username, channel, sendChan)
 
 	// Run forever, dispatching messages.
-	irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{logscript, printscript})
+	go irc.DispatchMessages(parsingOut, unparsingIn, []irc.Botscript{logscript, printscript})
 
 	// Block on receipt of a signal. We don't care what it is, just die.
 	<-sigs
