@@ -23,6 +23,10 @@ func ParseIRCMessage(msg []byte, out chan *struc.IRCMessage) {
 
 	// First, split the message on whitespace.
 	components := bytes.Fields(msg)
+	if len(components) == 0 {
+		// All whitespace, nothing to parse.
+		return
+	}
 
 	// Check whether the first component begins with a ':'. If it does, it's an IRC prefix.
 	if components[0][0] == ':' {
